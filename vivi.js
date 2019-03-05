@@ -173,6 +173,6 @@ function clearCommand(arguments, receivedMessage) {
 // https://discordapp.com/developers/applications/
 // Click on your application -> Bot -> Token -> "Click to Reveal Token"
 
-bot_secret_token = "NTUyMjcyMzk2OTk2ODM3Mzgz.D19KGA.tesJ_jj3OY70BK4oA7udoHqSpNY"
+bot_secret_token = "NTUyMjcyMzk2OTk2ODM3Mzgz.D2Aruw.nx-5-Dk_FOJG-0Mj_U-U-sORbe8"
 
 client.login(bot_secret_token)
