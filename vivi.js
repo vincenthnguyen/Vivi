@@ -6,7 +6,7 @@ client.on('ready', () => {
     console.log("Connected as " + client.user.tag)
 
     // Set bot status to: "Playing with JavaScript"
-    client.user.setActivity("to >help", {type: "LISTENING"})
+    client.user.setActivity(">help", {type: "LISTENING"})
     // Alternatively, you can set the activity to any of the following:
     // PLAYING, STREAMING, LISTENING, WATCHING
     // For example:
@@ -76,6 +76,10 @@ function processCommand(receivedMessage) {
         repeatCommand(arguments, receivedMessage)
     } else if (primaryCommand == "ping") {
         pingCommand(arguments, receivedMessage)
+    } else if (primaryCommand == "noping") {
+        noPingCommand(arguments, receivedMessage)
+    } else if (primaryCommand == "clear") {
+        clearCommand(arguments, receivedMessage)
     } else {
         receivedMessage.channel.send("I don't understand that command. Try using `>help` : D")
     }
@@ -97,11 +101,13 @@ function repeatCommand(arguments, receivedMessage) {
     }
 }
 
+var pinging = false;
+
 function pingCommand(arguments, receivedMessage) {
     if (arguments.length > 0) {
         if (receivedMessage.mentions.members.first().toString() != "") {
-            receivedMessage.channel.send(receivedMessage.mentions.members.first().toString())
-            receivedMessage.channel.bulkDelete(1)
+                pinging = true;
+                loop(receivedMessage);
         } else {
             receivedMessage.channel.send("Oops, I couldn't find " + arguments)
         }
@@ -109,6 +115,39 @@ function pingCommand(arguments, receivedMessage) {
     } else {
         receivedMessage.channel.send("Oops, I need a name to ping someone.")
     }
+}
+
+function loop(receivedMessage) {
+    var interval = (10*1000) + (Math.floor( (Math.random()*20)+1 )*1000);
+    if (pinging) {
+        setTimeout(function() {
+            ping(receivedMessage);
+            loop(receivedMessage);
+        }, interval)
+    }
+}
+
+function ping(receivedMessage) {
+    var mentioned = receivedMessage.mentions.members.first().toString()
+    console.log("Sending ghost ping to " + mentioned)
+    receivedMessage.channel.send(mentioned)
+    receivedMessage.channel.bulkDelete(1)
+}
+
+function noPingCommand(arguments, receivedMessage) {
+    pinging = false;
+    receivedMessage.channel.send("Ping command cleared~!")
+}
+
+function clearCommand(arguments, receivedMessage) {
+    var toBeCleared = 0;
+    if (arguments.length == 1) {
+        toBeCleared = parseFloat(arguments[0])
+    } else {
+        toBeCleared = 100;
+    }
+    receivedMessage.channel.bulkDelete(toBeCleared)
+    receivedMessage.channel.send("Channel cleared~! " + toBeCleared + " messages deleted~")
 }
 
 // Get your bot's secret token from:
