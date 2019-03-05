@@ -1,5 +1,6 @@
-const Discord = require('discord.js')
-const client = new Discord.Client()
+const Discord = require('discord.js');
+const client = new Discord.Client();
+const key = require('./key.js');
 
 // Runs right when the program starts
 client.on('ready', () => {
@@ -173,6 +174,6 @@ function clearCommand(arguments, receivedMessage) {
 // https://discordapp.com/developers/applications/
 // Click on your application -> Bot -> Token -> "Click to Reveal Token"
 
-bot_secret_token = "NTUyMjcyMzk2OTk2ODM3Mzgz.D19KGA.tesJ_jj3OY70BK4oA7udoHqSpNY"
+const bot_secret_token = key.getKey();
 
 client.login(bot_secret_token)
