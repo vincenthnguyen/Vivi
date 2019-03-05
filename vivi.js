@@ -58,6 +58,11 @@ client.on('message', (receivedMessage) => {
     if (receivedMessage.content.startsWith(">")) {
         processCommand(receivedMessage)
     }
+
+    // ping loop
+    if (pinging) {
+        loop();
+    }
 })
 
 // Functions/Methods
@@ -80,6 +85,8 @@ function processCommand(receivedMessage) {
         noPingCommand(arguments, receivedMessage)
     } else if (primaryCommand == "clear") {
         clearCommand(arguments, receivedMessage)
+    } else if (primaryCommand == "ghostrepeat") {
+        ghostRepeatCommand(arguments, receivedMessage)
     } else {
         receivedMessage.channel.send("I don't understand that command. Try using `>help` : D")
     }
@@ -95,19 +102,30 @@ function helpCommand(arguments, receivedMessage) {
 
 function repeatCommand(arguments, receivedMessage) {
     if (arguments.length > 0) {
-        receivedMessage.channel.send(arguments)
+        receivedMessage.channel.send(receivedMessage.content.substr(8))
     } else {
         receivedMessage.channel.send("Oops, I can't repeat nothing.")
     }
 }
 
-var pinging = false;
+function ghostRepeatCommand(arguments, receivedMessage) {
+    if (arguments.length > 0) {
+        receivedMessage.channel.bulkDelete(1)
+        receivedMessage.channel.send(receivedMessage.content.substr(13))
+    } else {
+        receivedMessage.channel.bulkDelete(1)
+        receivedMessage.channel.send("Oops, I can't repeat nothing.")
+    }
+}
+
+var pinging;
+var target;
 
 function pingCommand(arguments, receivedMessage) {
     if (arguments.length > 0) {
         if (receivedMessage.mentions.members.first().toString() != "") {
                 pinging = true;
-                loop(receivedMessage);
+                target = receivedMessage;
         } else {
             receivedMessage.channel.send("Oops, I couldn't find " + arguments)
         }
@@ -117,19 +135,20 @@ function pingCommand(arguments, receivedMessage) {
     }
 }
 
-function loop(receivedMessage) {
-    var interval = (10*1000) + (Math.floor( (Math.random()*20)+1 )*1000);
+function loop() {
+    //var interval = (10*1000) + (Math.floor( (Math.random()*20)+1 )*1000);
+    var interval = 2*1000;
     if (pinging) {
         setTimeout(function() {
-            ping(receivedMessage);
-            loop(receivedMessage);
+            ping(target);
+            loop();
         }, interval)
     }
 }
 
 function ping(receivedMessage) {
     var mentioned = receivedMessage.mentions.members.first().toString()
-    console.log("Sending ghost ping to " + mentioned)
+    console.log("Sending ghost ping to " + receivedMessage.content)
     receivedMessage.channel.send(mentioned)
     receivedMessage.channel.bulkDelete(1)
 }
