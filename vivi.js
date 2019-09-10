@@ -24,21 +24,6 @@ client.on('ready', () => {
         })
 
     })
-
-    var generalChannel = client.channels.get("552272100946084029") // Replace with known channel ID
-
-    // Example of sending a messsage
-    generalChannel.send("Sugoi~!")
-
-    // ----- Images/Attachments -----
-
-    // Provide a path to a local file
-    //const localFileAttachment = new Discord.Attachment('D:\\logo.png')
-    //generalChannel.send(localFileAttachment)
-
-    // Provide a URL to a file
-    const webAttachment = new Discord.Attachment('https://vinh.moe/images/dancing.gif')
-    generalChannel.send(webAttachment)
 })
 
 // Runs on message reply
