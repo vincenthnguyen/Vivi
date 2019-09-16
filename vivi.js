@@ -44,11 +44,6 @@ client.on('message', (receivedMessage) => {
     if (receivedMessage.content.startsWith(">")) {
         processCommand(receivedMessage)
     }
-
-    // ping loop
-    if (pinging) {
-        loop();
-    }
 })
 
 // Functions/Methods
@@ -96,51 +91,39 @@ function repeatCommand(arguments, receivedMessage) {
 
 function ghostRepeatCommand(arguments, receivedMessage) {
     if (arguments.length > 0) {
-        receivedMessage.channel.bulkDelete(1)
-        receivedMessage.channel.send(receivedMessage.content.substr(13))
+        var msg = receivedMessage.content.substr(13);
+        receivedMessage.delete();
+        receivedMessage.channel.send(msg);
     } else {
-        receivedMessage.channel.bulkDelete(1)
         receivedMessage.channel.send("Oops, I can't repeat nothing.")
     }
 }
 
-var pinging;
-var target;
-
 function pingCommand(arguments, receivedMessage) {
     if (arguments.length > 0) {
         if (receivedMessage.mentions.members.first().toString() != "") {
-                pinging = true;
-                target = receivedMessage;
+            var mentioned = receivedMessage.mentions.members.first().toString();
+            console.log("Sending ghost pings to " + mentioned);
+            const interval = setInterval(function() {
+                receivedMessage.channel.send(mentioned).then(sentMessage => {
+                    sentMessage.delete(1000);
+                }).catch(err => {
+                    console.error(err);
+                    clearInterval(interval);
+                });
+            }, 1000);
+            receivedMessage.delete(1000);
+            task = interval;
         } else {
-            receivedMessage.channel.send("Oops, I couldn't find " + arguments)
+            receivedMessage.channel.send("Oops, I couldn't find " + arguments);
         }
-
     } else {
-        receivedMessage.channel.send("Oops, I need a name to ping someone.")
+        receivedMessage.channel.send("Oops, I need a name to ping someone.");
     }
-}
-
-function loop() {
-    //var interval = (10*1000) + (Math.floor( (Math.random()*20)+1 )*1000);
-    var interval = 2*1000;
-    if (pinging) {
-        setTimeout(function() {
-            ping(target);
-            loop();
-        }, interval)
-    }
-}
-
-function ping(receivedMessage) {
-    var mentioned = receivedMessage.mentions.members.first().toString()
-    console.log("Sending ghost ping to " + receivedMessage.content)
-    receivedMessage.channel.send(mentioned)
-    receivedMessage.channel.bulkDelete(1)
 }
 
 function noPingCommand(arguments, receivedMessage) {
-    pinging = false;
+    clearInterval(task);
     receivedMessage.channel.send("Ping command cleared~!")
 }
 
