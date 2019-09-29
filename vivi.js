@@ -68,6 +68,8 @@ function processCommand(receivedMessage) {
         clearCommand(arguments, receivedMessage)
     } else if (primaryCommand == "ghostrepeat") {
         ghostRepeatCommand(arguments, receivedMessage)
+    } else if (primaryCommand == "xqc") {
+        xqcCommand(arguments, receivedMessage);
     } else {
         receivedMessage.channel.send("I don't understand that command. Try using `>help` : D")
     }
@@ -136,6 +138,10 @@ function clearCommand(arguments, receivedMessage) {
     }
     receivedMessage.channel.bulkDelete(toBeCleared)
     receivedMessage.channel.send("Channel cleared~! " + toBeCleared + " messages deleted~")
+}
+
+function xqcCommand(arguments, receivedMessage) {
+    receivedMessage.channel.send("6 CON SOOOOOLES!");
 }
 
 // Get your bot's secret token from:
