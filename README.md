@@ -1,6 +1,6 @@
 # Vivi
 
-A full of fun bot, created for Discord.
+A small but full of fun bot, created for Discord.
 
 ## NOTICE
 
